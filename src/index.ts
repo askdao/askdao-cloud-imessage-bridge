@@ -5,6 +5,7 @@
  * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
  */
 
+import "dotenv/config";
 import { BridgeServer } from "./server.js";
 
 const port = parseInt(process.env.BRIDGE_PORT || "3002", 10);
