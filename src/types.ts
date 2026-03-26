@@ -14,6 +14,7 @@ export interface BridgeInboundMessage {
   content: string;
   timestamp: number;
   isGroup: boolean;
+  chat_title: string;   // Platform-provided group name (displayName)
   media: string[];
 }
 
@@ -45,6 +46,7 @@ export interface BBMessage {
   } | null;
   chats: Array<{
     guid: string;       // Chat GUID
+    style: number;      // 43 = group, 45 = DM (macOS iMessage DB native)
     displayName: string | null;
     participants: Array<{
       address: string;
@@ -55,7 +57,7 @@ export interface BBMessage {
     filePath: string;
     mimeType: string;
   }>;
-  isGroup: boolean;
+  isGroup?: boolean;    // NOT present in real-time WebSocket events
 }
 
 export interface BBNewMessageEvent {

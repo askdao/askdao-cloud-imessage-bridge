@@ -132,10 +132,12 @@ export class BlueBubblesClient {
     if (!bbMsg.text && (!bbMsg.attachments || bbMsg.attachments.length === 0)) return;
 
     const sender = bbMsg.handle?.address || "unknown";
-    const chatGuid = bbMsg.chats?.[0]?.guid || "";
-    const isGroup = bbMsg.chats?.[0]?.participants
-      ? bbMsg.chats[0].participants.length > 1
-      : false;
+    const chat = bbMsg.chats?.[0];
+    const chatGuid = chat?.guid || "";
+    // BlueBubbles omits isGroup from WebSocket events, but includes chat.style.
+    // style === 43 is the macOS iMessage DB native definition for group chats.
+    const isGroup = bbMsg.isGroup ?? (chat?.style === 43);
+    console.log(`[BB] isGroup=${isGroup} style=${chat?.style} sender=${sender} chat=${chatGuid.slice(0, 50)}`);
 
     const bridgeMsg: BridgeInboundMessage = {
       type: "message",
@@ -145,6 +147,7 @@ export class BlueBubblesClient {
       content: bbMsg.text || "",
       timestamp: Math.floor(bbMsg.dateCreated / 1000),
       isGroup,
+      chat_title: bbMsg.chats?.[0]?.displayName || "",
       media: bbMsg.attachments?.map((a) => a.filePath) || [],
     };
 
