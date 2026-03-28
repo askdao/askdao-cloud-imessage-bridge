@@ -1,0 +1,20 @@
+# Cloudflare Connector (Tunnel) configuration for imessage-bridge
+# Place this file at: ~/.cloudflared/config.yml
+#
+# Replace __TUNNEL_ID__ with your actual tunnel ID
+# Replace __HOSTNAME__ with your chosen subdomain (e.g. imessage-bridge.yourdomain.com)
+
+tunnel: __TUNNEL_ID__
+credentials-file: ~/.cloudflared/__TUNNEL_ID__.json
+
+ingress:
+  - hostname: __HOSTNAME__
+    service: ws://localhost:3002
+    originRequest:
+      # WebSocket support
+      noTLSVerify: false
+      connectTimeout: 30s
+      # Keep WebSocket connections alive
+      tcpKeepAlive: 30s
+  # Catch-all rule (required by cloudflared)
+  - service: http_status:404
